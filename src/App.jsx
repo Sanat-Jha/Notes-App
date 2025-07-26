@@ -2,6 +2,7 @@ import { useState } from 'react';
 import Sidebar from './components/Sidebar';
 import CategoryModal from './components/CategoryModal';
 import NoteModal from './components/NoteModal';
+import NoteDetailModal from './components/NoteDetailModal';
 import NotesGrid from './components/NotesGrid';
 import NoteDetail from './components/NoteDetail';
 
@@ -59,6 +60,10 @@ function App() {
     setSelectedNote(note);
   };
 
+  const handleCloseNoteDetail = () => {
+    setSelectedNote(null);
+  };
+
   const handleAddNote = () => {
     setIsNoteModalOpen(true);
   };
@@ -73,6 +78,17 @@ function App() {
     };
     setNotes([...notes, newNote]);
     setIsNoteModalOpen(false);
+  };
+
+  const handleUpdateNote = (updatedNote) => {
+    setNotes(notes.map(note => 
+      note.id === updatedNote.id ? updatedNote : note
+    ));
+  };
+
+  const handleDeleteNote = (noteId) => {
+    setNotes(notes.filter(note => note.id !== noteId));
+    setSelectedNote(null); // Close the modal after deletion
   };
 
   return (
@@ -109,6 +125,16 @@ function App() {
         isOpen={isNoteModalOpen}
         onClose={() => setIsNoteModalOpen(false)}
         onCreateNote={handleCreateNote}
+      />
+
+      {/* Note Detail Modal */}
+      <NoteDetailModal
+        note={selectedNote}
+        isOpen={!!selectedNote}
+        onClose={handleCloseNoteDetail}
+        onUpdateNote={handleUpdateNote}
+        onDeleteNote={handleDeleteNote}
+        categories={categories}
       />
     </div>
   );
