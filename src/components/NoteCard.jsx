@@ -5,7 +5,7 @@ const NoteCard = ({ note, isAddCard = false, onClick }) => {
     return (
       <button
         onClick={onClick}
-        className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-200 flex items-center justify-center min-h-[200px] border-2 border-dashed border-gray-300 hover:border-blue-400"
+        className="bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-200 flex items-center justify-center aspect-[4/3] border-2 border-dashed border-gray-300 hover:border-blue-400"
       >
         <PlusIcon className="w-12 h-12 text-gray-400" />
       </button>
@@ -15,25 +15,25 @@ const NoteCard = ({ note, isAddCard = false, onClick }) => {
   return (
     <div
       onClick={onClick}
-      className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-200 cursor-pointer"
+      className=" overflow-hidden transition-all duration-200 cursor-pointer"
     >
-      <div className="aspect-square bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center relative">
+      <div className="aspect-[4/3] bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center relative">
         {note.image ? (
           <img
             src={note.image}
             alt={note.title}
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover rounded-xl  "
           />
         ) : (
-          <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center">
-            <span className="text-2xl font-bold text-blue-500">
+          <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center">
+            <span className="text-3xl font-bold text-blue-500">
               {note.title.charAt(0)}
             </span>
           </div>
         )}
       </div>
       <div className="p-4">
-        <h3 className="font-semibold text-gray-800 text-sm line-clamp-2">
+        <h3 className="font-medium text-gray-900 text-base leading-tight">
           {note.title}
         </h3>
       </div>

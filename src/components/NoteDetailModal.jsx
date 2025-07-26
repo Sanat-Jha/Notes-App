@@ -118,7 +118,7 @@ const NoteDetailModal = ({ note, isOpen, onClose, onUpdateNote, onDeleteNote, ca
 
   return (
     <div 
-      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+      className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 p-4"
       onClick={isEditing || showDeleteConfirm ? undefined : onClose}
     >
       <div 
@@ -310,7 +310,7 @@ const NoteDetailModal = ({ note, isOpen, onClose, onUpdateNote, onDeleteNote, ca
 
         {/* Delete Confirmation Dialog */}
         {showDeleteConfirm && (
-          <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center rounded-xl">
+          <div className="absolute inset-0 bg-black bg-opacity-60 flex items-center justify-center rounded-xl">
             <div className="bg-white rounded-lg shadow-xl p-6 mx-4 max-w-sm w-full">
               <div className="flex items-center justify-center w-12 h-12 mx-auto bg-red-100 rounded-full mb-4">
                 <TrashIcon className="w-6 h-6 text-red-600" />
