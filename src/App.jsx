@@ -1,53 +1,76 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Sidebar from './components/Sidebar';
 import CategoryModal from './components/CategoryModal';
 import NoteModal from './components/NoteModal';
 import NoteDetailModal from './components/NoteDetailModal';
 import NotesGrid from './components/NotesGrid';
 import NoteDetail from './components/NoteDetail';
+import { loadFromLocalStorage, saveToLocalStorage, STORAGE_KEYS } from './utils/localStorage';
 
-// Dummy data
-const initialCategories = [
+// Default data for first-time users
+const defaultCategories = [
   { id: 1, name: 'Life' },
   { id: 2, name: 'School' },
   { id: 3, name: 'Friends' },
   { id: 4, name: 'Work' },
 ];
 
-const dummyNotes = [
-  {
-    id: 1,
-    title: 'The Power of the Long Game',
-    content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
-    categoryId: 4,
-    image: 'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=400&h=400&fit=crop&crop=center',
-  },
-  {
-    id: 2,
-    title: 'Morning Routine Ideas',
-    content: 'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-    categoryId: 1,
-    image: null,
-  },
-  {
-    id: 3,
-    title: 'Study Techniques',
-    content: 'Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis.',
-    categoryId: 2,
-    image: 'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=400&h=400&fit=crop&crop=center',
-  },
-];
-
 function App() {
-  const [categories, setCategories] = useState(initialCategories);
-  const [selectedCategory, setSelectedCategory] = useState(4); // Work selected by default
-  const [notes, setNotes] = useState(dummyNotes);
+  const [categories, setCategories] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [notes, setNotes] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedNote, setSelectedNote] = useState(null);
   const [isNoteModalOpen, setIsNoteModalOpen] = useState(false);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Load data from localStorage on component mount
+  useEffect(() => {
+    const savedCategories = loadFromLocalStorage(STORAGE_KEYS.CATEGORIES, defaultCategories);
+    const savedNotes = loadFromLocalStorage(STORAGE_KEYS.NOTES, []);
+    const savedSelectedCategory = loadFromLocalStorage(STORAGE_KEYS.SELECTED_CATEGORY, savedCategories[3]?.id || savedCategories[0]?.id);
+
+    setCategories(savedCategories);
+    setNotes(savedNotes);
+    setSelectedCategory(savedSelectedCategory);
+    setIsLoading(false);
+  }, []);
+
+  // Save categories to localStorage whenever they change
+  useEffect(() => {
+    if (categories.length > 0 && !isLoading) {
+      saveToLocalStorage(STORAGE_KEYS.CATEGORIES, categories);
+    }
+  }, [categories, isLoading]);
+
+  // Save notes to localStorage whenever they change
+  useEffect(() => {
+    if (!isLoading) {
+      saveToLocalStorage(STORAGE_KEYS.NOTES, notes);
+    }
+  }, [notes, isLoading]);
+
+  // Save selected category to localStorage whenever it changes
+  useEffect(() => {
+    if (selectedCategory !== null && !isLoading) {
+      saveToLocalStorage(STORAGE_KEYS.SELECTED_CATEGORY, selectedCategory);
+    }
+  }, [selectedCategory, isLoading]);
 
   const filteredNotes = notes.filter(note => note.categoryId === selectedCategory);
+
+  // Show loading state
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-500 mx-auto"></div>
+          <p className="text-gray-600 mt-4">Loading your notes...</p>
+        </div>
+      </div>
+    );
+  }
 
   const handleAddCategory = (name) => {
     const newCategory = {
